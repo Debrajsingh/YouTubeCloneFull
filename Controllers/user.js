@@ -35,3 +35,7 @@ exports.signIn = async (req,res)=>{
         res.status(500).json({ error: 'Server error' });
     }
 }
+
+exports.logout = async(req,res)=>{
+    res.clearCookie('token', cookieOptions).json({ message: 'Logged out successfully' });
+}
