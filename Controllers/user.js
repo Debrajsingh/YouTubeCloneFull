@@ -1,5 +1,13 @@
 const User = require('../Modals/user');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+
+const cookieOptions = {
+    httpOnly: true,
+    secure: false, // Set to true in production
+    sameSite: 'Lax'
+  };
 
 exports.signUp = async(req,res)=>{
     console.log("In signup")
@@ -26,7 +34,10 @@ exports.signIn = async (req,res)=>{
         const { userName, password } = req.body;
         const user = await User.findOne({ userName });
         if(user && await bcrypt.compare(password,user.password)){
-            res.json({ message: 'Logged in successfully', success:"true"})
+            const token = jwt.sign({ userId: user._id},'Debraj_Secret_Key');
+            res.cookie('token',token,cookieOptions)
+            
+            res.json({ message: 'Logged in successfully', success:"true",token})
 
         }else{
             res.status(400).json({ error: 'Invalid credentials'});
@@ -35,7 +46,7 @@ exports.signIn = async (req,res)=>{
         res.status(500).json({ error: 'Server error' });
     }
 }
-
 exports.logout = async(req,res)=>{
     res.clearCookie('token', cookieOptions).json({ message: 'Logged out successfully' });
 }
+
