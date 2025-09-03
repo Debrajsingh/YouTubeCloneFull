@@ -6,7 +6,6 @@ exports.signUp = async(req,res)=>{
      try{
         const { channelName, userName, about, profilePic, password } = req.body;
         const isExist = await User.findOne({ userName });
-        console.log(isExist)
         if(isExist){
             res.status(400).json({ error:"Username Already Exists  Please try with other username"});
         }else{
@@ -18,6 +17,21 @@ exports.signUp = async(req,res)=>{
        
         
     } catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+
+exports.signIn = async (req,res)=>{
+    try{
+        const { userName, password } = req.body;
+        const user = await User.findOne({ userName });
+        if(user && await bcrypt.compare(password,user.password)){
+            res.json({ message: 'Logged in successfully', success:"true"})
+
+        }else{
+            res.status(400).json({ error: 'Invalid credentials'});
+        }
+    } catch (errorMsg){
         res.status(500).json({ error: 'Server error' });
     }
 }
