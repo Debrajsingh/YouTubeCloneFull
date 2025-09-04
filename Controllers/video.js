@@ -26,7 +26,7 @@ exports.getAllVideo = async(req,res)=>{
 exports.getVideoById = async (req,res)=>{
     try{
         let {id} = req.params;
-         // please watch the video for the code
+        
 
         res.status(201).json({ sucess: "true", "video": video });
     }catch (error){
