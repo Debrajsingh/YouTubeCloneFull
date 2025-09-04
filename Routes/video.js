@@ -5,7 +5,7 @@ const auth = require('../middleware/authentication');
 
 router.post('/video',auth,videoController.uploadVideo);
 router.get('/allVideo',videoController.getAllVideo);
-//router.get('/getVideoById/:id',videoController.getVideoById);
+router.get('/getVideoById/:id',videoController.getVideoById);
 //router.get('/:userId/channel',videoController.getAllVideoByUserID);
 
 
