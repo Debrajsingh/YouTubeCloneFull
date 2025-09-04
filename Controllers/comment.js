@@ -9,10 +9,23 @@ exports.addComment = async(req,res)=>{
         await comment.save();
 
         res.status(201).json({
-            essage:"Success",
+            message:"Success",
             comment
         });
 
+    } catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+}
+exports.getCommentByVideoId = async(req,res)=>{
+    try{
+        let {videoId} =req.params;
+        const comments =await Comment.find({ video: videoId}).populate('user','channelName profilePic userName createdAt about');
+
+        res.status(201).json({
+            message:"Success",
+            comments
+        });
     } catch (error){
         res.status(500).json({ error: 'Server error' });
     }

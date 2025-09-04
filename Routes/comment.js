@@ -5,7 +5,7 @@ const auth = require('../middleware/authentication');
 
 
 router.post('/comment',auth,CommentController.addComment);
-
+router.get('/comment/:videoId',CommentController.getCommentByVideoId);
 
 
 module.exports = router;
