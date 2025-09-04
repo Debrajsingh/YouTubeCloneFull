@@ -14,3 +14,12 @@ exports.uploadVideo = async (req,res)=>{
         res.status(500).json({ error: 'Server error' });
     }
 }
+exports.getAllVideo = async(req,res)=>{
+    try{
+        const videos = await Video.find().populate('user','channelName profilePic userName createdAt');
+        
+        res.status(201).json({ sucess: "true", "videos": videos });
+    }catch (error){
+        res.status(500).json({ error: 'Server error' });
+    }
+}
