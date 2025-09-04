@@ -44,5 +44,3 @@ exports.getAllVideoByUserID = async(req,res)=>{
         res.status(500).json({ error: 'Server error' });
     }
 }
-
-exports.getAllVideoByUserID
