@@ -73,6 +73,7 @@
     font-weight: 600;
     cursor: pointer;
     font-size: 14px;
+    text-decoration: none;
 }
 .youtube_video_likeBlock{
     display: flex;

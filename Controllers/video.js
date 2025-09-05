@@ -27,8 +27,6 @@ exports.getVideoById = async (req,res)=>{
     try{
         let {id} = req.params;
         const video = await Video.findById(id).populate('user','channelName profilePic userName createdAt');
-        
-
         res.status(201).json({ sucess: "true", "video": video });
     }catch (error){
         res.status(500).json({ error: 'Server error' });

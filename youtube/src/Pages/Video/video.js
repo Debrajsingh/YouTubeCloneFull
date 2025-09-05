@@ -1,55 +1,76 @@
-import React, { useState } from "react";
-import "./video.css";
-import ThumbUpAltOutlinedIcon from "@mui/icons-material/ThumbUpAltOutlined";
-import ThumbDownAltOutlinedIcon from "@mui/icons-material/ThumbDownAltOutlined";
-import { Link } from "react-router-dom";
+import React, {useEffect, useState} from 'react'
+import './video.css';
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
+import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import axios from "axios";
 
 const Video = () => {
-  const [inputField, setInputField] = useState("")
-  console.log(inputField)
+    const [message, setMessage] = useState("");
+    const [data,setData] = useState(null);
+    const [videoUrl, setVideoURL] = useState("");
+    const {id} = useParams();
+
+
+   const fetchVedioById = async () => {
+        await axios.get(`http://localhost:4000/api/getVideoById/${id}`).then((response) => {
+            console.log(response.data.video);
+            setData(response.data.video)
+            setVideoURL(response.data.video.videoLink)
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
+    useEffect(() => {
+        fetchVedioById();
+    }, []);
+    
   return (
     <div className="video">
       <div className="videoPostSection">
         <div className="video_youtube">
-          <video width="400" controls autoPlay className="video_youtube_video">
+          {data && <video width="400" controls autoPlay className="video_youtube_video">
             <source
-              src={"https://www.w3schools.com/html/mov_bbb.mp4"}
+              src={videoUrl}
               type="video/mp4"
             />
             <source
-              src={"https://www.w3schools.com/html/mov_bbb.mp4"}
+              src={videoUrl}
               type="video/webm"
             />
             Your browser does not support HTML video.
-          </video>
+          </video>}
+          
         </div>
         <div className="video_youtubeAbout">
           <div className="video_uTubeTitle">
-            {"I'm Confused... SmackDown In France Was GREAT or TRASH?"}
+            {data?.title}
           </div>
           <div className="youtube_video_ProfileBlock">
             <div className="youtube_video_ProfileBlock_left">
-              <Link to={'/user/2001'} className="youtube_video_ProfileBlock_left_img">
+              <Link to={`/user/${data?.user?._id}`}  className="youtube_video_ProfileBlock_left_img">
                 <img
                   src={
-                    "https://yt3.googleusercontent.com/NO-xhKqiIdN23_EwT37Qq7fvbc6YPdRoRCs2wM5ksQaGX5nrCYjtBIhlpLQAS-dq3AhrzyzHeAc=s160-c-k-c0x00ffffff-no-rj"
+                    data?.user?.profilePic
                   }
                   alt=""
                   className="youtube_video_ProfileBlock_left_image"
                 />
               </Link>
-              <Link to={'/user/2001'} className="youtubeVideo_subsView">
-                <div className="youtubePostProfileName">{"TheGreatOne"}</div>
+              <Link to={`/user/${data?.user?._id}`} className="youtubeVideo_subsView">
+                <div className="youtubePostProfileName">{data?.user?.channelName}</div>
                 <div className="youtubePostProfileSubs">
-                  {"5.07M subscribers"}
+                  {data?.user?.createdAt.slice(0, 10)}
                 </div>
               </Link>
-              <div className="subscribeBtnYoutube">Subscribe</div>
+              <Link to={`/user/${data?.user?._id}`} className="subscribeBtnYoutube">Subscribe</Link>
             </div>
 
             <div className="youtube_video_likeBlock">
               <div className="youtube_video_likeBlock_Like">
-                <ThumbUpAltOutlinedIcon />
+                <ThumbUpOutlinedIcon />
                 <div className="youtube_video_likeBlock_NoOfLike">{4}</div>
               </div>
               <div className="youtubeVideoDivider"></div>
@@ -77,8 +98,8 @@ const Video = () => {
                   type="text"
                   placeholder="Add a comment"
                   className="addACommentInput"
-                  value={inputField}
-                  onChange={(e)=>{setInputField(e.target.value)}}
+                  value={message}
+                  onChange={(e)=>{setMessage(e.target.value)}}
                 />
                 <div className="cancelSubmitComment">
                   <div className="cancelComment">Cancel</div>
@@ -335,7 +356,7 @@ const Video = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default Video;

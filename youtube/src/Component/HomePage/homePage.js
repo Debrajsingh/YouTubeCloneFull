@@ -58,7 +58,7 @@ const HomePage = ({ sideNavbar }) => {
       >
         {data?.map((item, ind) => {
           return (
-            <Link to={"/watch/${item._id}"} className="youtube_Video">
+            <Link to={`/watch/${item._id}`} className="youtube_Video">
               <div className="youtube_thumbnailBox">
                 <img
                   src={item.thumbnail}
