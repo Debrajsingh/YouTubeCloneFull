@@ -117,6 +117,7 @@
     width: 30px;
     border-radius: 50%;
     cursor: pointer;
+    height: 30px;
 }
 .navbar-model{
     position: absolute;
