@@ -23,7 +23,7 @@ const Profile = ({ sideNavbar }) => {
   };
   useEffect(() => {
     fetchProfileData();
-  }, []);
+  }, [id]);
   return (
     <div className="profile">
       <SideNavbar sideNavbar={sideNavbar} />
@@ -56,7 +56,8 @@ const Profile = ({ sideNavbar }) => {
           <div className="profileVideos">
             {data.map((item, key) => {
               return (
-                <Link to={`/watch/${item._id}`} className="profileVideos_block">
+                <Link to={`/watch/${item._id}`} className="profileVideos_block"
+                key={item._id}>
                   <div className="profileVideos_block_thumbnail">
                     <img
                       src={item?.thumbnail}

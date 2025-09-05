@@ -26,11 +26,15 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
     const sideNavbaeFunc =()=>{
         setSideNavbarFunc(!sideNavbar);
     }
-    const handleprofile =()=>{
-        let userId = localStorage.getItem("userId")
+    const handleprofile = () => {
+    let userId = localStorage.getItem("userId");
+    if (userId) {
         navigate(`/user/${userId}`);
         setNavbarModel(false);
+    } else {
+        setLogin(true); // Show login modal if not logged in
     }
+};
     const setLoginModel=()=>{
         setLogin(false);
     }
@@ -57,14 +61,13 @@ window.location.reload();
     })
   }
 
-    useEffect(()=>{
+    useEffect(() => {
     let userProfilePic = localStorage.getItem("userProfilePic");
-    setIsLogedIn(localStorage.getItem("userId")!==null?true:false);
-    if(userProfilePic!==null){
-      setUserPic(userProfilePic)
+    setIsLogedIn(localStorage.getItem("userId") !== null);
+    if (userProfilePic !== null) {
+        setUserPic(userProfilePic);
     }
-
-  },[])
+}, [login]);
 
   return (
   <div className="navbar">
@@ -93,21 +96,19 @@ window.location.reload();
     </div>
 
     <div className="navbar_right">
-        <Link to={'/2001/uploade'}>
+    <Link to={`/${localStorage.getItem("userId") || ""}/uploade`}>
         <VideoCallIcon sx={{fontSize:"30px",cursor:"pointer",color:"white"}} />
-        </Link>
-        
-        <NotificationsIcon sx={{fontSize:"30px",cursor:"pointer",color:"white"}} />
-        <img onClick={handleClickModel} src={userPic} alt="logo" className="navbar-right-logo" />
-{ navbarModel &&
+    </Link>
+    <NotificationsIcon sx={{fontSize:"30px",cursor:"pointer",color:"white"}} />
+    <img onClick={handleClickModel} src={userPic} alt="logo" className="navbar-right-logo" />
+    { navbarModel &&
         <div className="navbar-model">
             {isLogedIn && <div className="navbar-model-option" onClick={handleprofile}>Profile</div>}
-            
             {isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("logout")}>Logout</div>}
             {!isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("login")}>Login</div>}
         </div>
-}
-    </div>
+    }
+</div>
 
     {
         login && <Login setLoginModel={setLoginModel}/>

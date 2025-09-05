@@ -5,14 +5,13 @@ import ThumbDownAltOutlinedIcon from '@mui/icons-material/ThumbDownAltOutlined';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import axios from "axios";
-
+import {toast,ToastContainer} from 'react-toastify'
 const Video = () => {
     const [message, setMessage] = useState("");
     const [data,setData] = useState(null);
     const [videoUrl, setVideoURL] = useState("");
     const {id} = useParams();
     const [comments, setComments] = useState([]);
-
 
    const fetchVedioById = async () => {
         await axios.get(`http://localhost:4000/api/getVideoById/${id}`).then((response) => {
@@ -32,12 +31,25 @@ const Video = () => {
             console.log(err);
         })
     }
-
     useEffect(() => {
         fetchVedioById();
         getCommentByVideoId();
     }, []);
     
+    const handleComment = async()=>{
+        const body = {
+            "message":message,
+            "video":id
+        }
+        await axios.post('http://localhost:4000/commentApi/comment',body, { withCredentials: true }).then((resp)=>{
+            console.log(resp)
+            const newComment = resp.data.comment;
+            setComments([newComment,...comments]);
+            setMessage("")
+        }).catch(err=>{
+            toast.error("Please Login First to comment")
+        })
+    }
   return (
     <div className="video">
       <div className="videoPostSection">
@@ -113,7 +125,7 @@ const Video = () => {
                 />
                 <div className="cancelSubmitComment">
                   <div className="cancelComment">Cancel</div>
-                  <div className="cancelComment">Comment</div>
+                  <div className="cancelComment" onClick={handleComment}>Comment</div>
                 </div>
               </div>
             </div>
@@ -298,6 +310,7 @@ const Video = () => {
             </div>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   )
 }
