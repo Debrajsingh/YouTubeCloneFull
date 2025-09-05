@@ -67,6 +67,7 @@
     padding: 100px 0 20px 0px;
     background-color: black;
     justify-content: center;
+    height: 100vh;
 }
 .youtube_Video{
     color: white;

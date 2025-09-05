@@ -1,37 +1,78 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import "./signUp.css";
 import YouTubeIcon from "@mui/icons-material/YouTube";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from 'react-router-dom'; 
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import Box from "@mui/material/Box";
+import LinearProgress from "@mui/material/LinearProgress";
 const SignUp = () => {
-  const[uploadedImageUrl,setUploadedImageUrl] = useState("https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg");
-  const [signUpField,setSignUpField] = useState({"channelName":"","userName":"","password":"","about":"","profilePic":uploadedImageUrl});
-  const handleInputField = (event,name)=>{
-        setSignUpField({
-            ...signUpField,[name]:event.target.value
-        })
-  }
+  const [uploadedImageUrl, setUploadedImageUrl] = useState(
+    "https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
+  );
+  const [signUpField, setSignUpField] = useState({
+    channelName: "",
+    userName: "",
+    password: "",
+    about: "",
+    profilePic: uploadedImageUrl,
+  });
 
-  console.log(signUpField)
+  const [progressBar,setProgressBar] = useState(false);
+  const navigate = useNavigate();
 
-  const uploadeImage= async(e)=>{
-    const files =e.target.files;
+  const handleInputField = (event, name) => {
+    setSignUpField({
+      ...signUpField,
+      [name]: event.target.value,
+    });
+  };
+
+  console.log(signUpField);
+
+  const uploadeImage = async (e) => {
+    console.log("uploading");
+    const files = e.target.files;
     const data = new FormData();
-    data.append('file',files[0]);
-    //youtube_clone
-    data.append('upload_preset','youtube_clone');
+    data.append("file", files[0]);
+    
+    data.append("upload_preset", "youtube_clone");
     try {
       // cloud_name=digi9wabj
-      const response = await axios.post("https://api.cloudinary.com/v1_1/digi9wabj/image/upload",data)
+
+      setProgressBar(true)
+      const response = await axios.post(
+        "https://api.cloudinary.com/v1_1/digi9wabj/image/upload",
+        data
+      );
+      setProgressBar(false)
       const imageUrl = response.data.url;
       setUploadedImageUrl(imageUrl);
       setSignUpField({
-            ...signUpField,"profilePic":imageUrl
-        })
+        ...signUpField,
+        profilePic: imageUrl,
+      });
     } catch (err) {
-      console.log(err)
+      console.log(err);
     }
-  }
+  };
+  const handleSignup = async () => {
+    setProgressBar(true);
+    axios
+      .post(`http://localhost:4000/auth/signUp`, signUpField)
+      .then((res) => {
+        
+        toast.success(res.data.message)
+        setProgressBar(false);
+        navigate('/');
+
+      })
+      .catch((err) => {
+         setProgressBar(false);
+         toast.error(err)
+
+      });
+  };
   return (
     <div className="signUp">
       <div className="signUp_card">
@@ -49,32 +90,36 @@ const SignUp = () => {
             className="signUp_Inputs_inp"
             placeholder="Channel Name"
             value={signUpField.channelName}
-            onChange={(e)=>handleInputField(e,"channelName")}
+            onChange={(e) => handleInputField(e, "channelName")}
           />
           <input
             type="text"
             className="signUp_Inputs_inp"
             placeholder="User Name"
             value={signUpField.userName}
-            onChange={(e)=>handleInputField(e,"userName")}
+            onChange={(e) => handleInputField(e, "userName")}
           />
           <input
             type="password"
             className="signUp_Inputs_inp"
             placeholder="Password"
             value={signUpField.password}
-            onChange={(e)=>handleInputField(e,"password")}
+            onChange={(e) => handleInputField(e, "password")}
           />
           <input
             type="text"
             className="signUp_Inputs_inp"
             placeholder="About Your Channel"
             value={signUpField.about}
-            onChange={(e)=>handleInputField(e,"about")}
+            onChange={(e) => handleInputField(e, "about")}
           />
 
           <div className="image_uploade_signup">
-            <input type="file" onChange={(e)=>uploadeImage(e)} accept="photo/*" />
+            <input
+              type="file"
+              onChange={(e) => uploadeImage(e)}
+              accept="photo/*"
+            />
 
             <div className="image_uploade_signup_div">
               <img
@@ -86,13 +131,22 @@ const SignUp = () => {
           </div>
 
           <div className="signUpBtns">
-            <div className="signUpBtn">SignUp</div>
+            <div className="signUpBtn" onClick={handleSignup}>
+              SignUp
+            </div>
             <Link to={"/"} className="signUpBtn">
               Home Page
             </Link>
           </div>
+
+          
+        {progressBar && <Box sx={{ width: "100%" }}>
+            <LinearProgress />
+          </Box>}
+
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

@@ -44,7 +44,7 @@ const Login = ({ setLoginModel }) => {
         <div className="uploadeBtns">
           <div className="uploadeBtn-form">Login</div>
           <Link
-            to={"/signup"}
+            to={`/signup`}
             className="uploadeBtn-form"
             onClick={() => setLoginModel()}
           >
