@@ -11,6 +11,7 @@ const Video = () => {
     const [data,setData] = useState(null);
     const [videoUrl, setVideoURL] = useState("");
     const {id} = useParams();
+    const [comments, setComments] = useState([]);
 
 
    const fetchVedioById = async () => {
@@ -23,8 +24,18 @@ const Video = () => {
         })
     }
 
+    const getCommentByVideoId = async () => {
+        await axios.get(`http://localhost:4000/commentApi/comment/${id}`).then((response) => {
+            console.log(response);
+            setComments(response.data.comments)
+        }).catch(err => {
+            console.log(err);
+        })
+    }
+
     useEffect(() => {
         fetchVedioById();
+        getCommentByVideoId();
     }, []);
     
   return (
@@ -71,7 +82,7 @@ const Video = () => {
             <div className="youtube_video_likeBlock">
               <div className="youtube_video_likeBlock_Like">
                 <ThumbUpOutlinedIcon />
-                <div className="youtube_video_likeBlock_NoOfLike">{4}</div>
+                <div className="youtube_video_likeBlock_NoOfLike">{data?.like}</div>
               </div>
               <div className="youtubeVideoDivider"></div>
               <div className="youtube_video_likeBlock_Like">
@@ -80,14 +91,13 @@ const Video = () => {
             </div>
           </div>
           <div className="youtube_video_About">
-            <div>2025-39-09</div>
+            <div>{data?.createdAt.slice(0, 10)}</div>
             <div>
-              I'm Confused... SmackDown In France Was GREAT or TRASH? | WWE
-              Friday Night SmackDown Review.
+              {data?.description}
             </div>
           </div>
           <div className="youtubeCommentSection">
-            <div className="youtubeCommentSectionTitle">2 Comments</div>
+            <div className="youtubeCommentSectionTitle">{comments.length} Comments</div>
             <div className="youtubeSelfComment">
               <img
                 src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
@@ -108,96 +118,29 @@ const Video = () => {
               </div>
             </div>
             <div className="youtubeOthersComments">
+
+              {
+                comments.map((item,index)=>{
+                  return(
               <div className="youtubeSelfComment">
                 <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
+                  src={item?.user?.profilePic}
                   className="video_youtubeSelfCommentProfile" alt=""
                 />
                 <div className="others_commentSection">
                   <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
+                    <div className="channelName_comment">{item?.user?.channelName}</div>
+                    <div className="commentTimmingOthers">{item?.createdAt.slice(0,10)}</div>
                   </div>
                   <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
+                   {item?.message}
                   </div>
                 </div>
               </div>
-              <div className="youtubeSelfComment">
-                <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
-                  className="video_youtubeSelfCommentProfile" alt=""
-                />
-                <div className="others_commentSection">
-                  <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
-                  </div>
-                  <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
-                  </div>
-                </div>
-              </div>
-              <div className="youtubeSelfComment">
-                <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
-                  className="video_youtubeSelfCommentProfile" alt=""
-                />
-                <div className="others_commentSection">
-                  <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
-                  </div>
-                  <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
-                  </div>
-                </div>
-              </div>
-              <div className="youtubeSelfComment">
-                <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
-                  className="video_youtubeSelfCommentProfile" alt=""
-                />
-                <div className="others_commentSection">
-                  <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
-                  </div>
-                  <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
-                  </div>
-                </div>
-              </div>
-              <div className="youtubeSelfComment">
-                <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
-                  className="video_youtubeSelfCommentProfile" alt=""
-                />
-                <div className="others_commentSection">
-                  <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
-                  </div>
-                  <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
-                  </div>
-                </div>
-              </div>
-              <div className="youtubeSelfComment">
-                <img
-                  src="https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg"
-                  className="video_youtubeSelfCommentProfile" alt=""
-                />
-                <div className="others_commentSection">
-                  <div className="others_commentSectionHeader">
-                    <div className="channelName_comment">User1</div>
-                    <div className="commentTimmingOthers">2025-31-09</div>
-                  </div>
-                  <div className="othersCommentSectionComment">
-                    This is Awsome!!!!
-                  </div>
-                </div>
-              </div>
+                  );
+                })
+              }
+
             </div>
           </div>
         </div>
