@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState,useEffect} from "react";
 import "./navbar.css";
 import MenuIcon from '@mui/icons-material/Menu';
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -8,13 +8,16 @@ import VideoCallIcon from '@mui/icons-material/VideoCall';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { Link,useNavigate } from 'react-router-dom' 
 import Login from "../Login/login";
-//import SideNavbar from "../SideNavbar/sideNavbar";
-//import PersonIcon from '@mui/icons-material/Person';
+
+
+//import Login from '../Login/login';
+import axios from 'axios';
 
 const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
-    const [userPic] = useState("https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg")
+    const [userPic,setUserPic] = useState("https://cdn.vectorstock.com/i/500p/54/69/male-user-icon-vector-8865469.jpg")
     const [navbarModel,setNavbarModel] = useState(false);
     const [login,setLogin] =useState(false);
+    const [isLogedIn,setIsLogedIn] = useState(false)
     const navigate = useNavigate();
 
     const handleClickModel =()=>{
@@ -24,7 +27,8 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
         setSideNavbarFunc(!sideNavbar);
     }
     const handleprofile =()=>{
-        navigate('/user/2001');
+        let userId = localStorage.getItem("userId")
+        navigate(`/user/${userId}`);
         setNavbarModel(false);
     }
     const setLoginModel=()=>{
@@ -35,9 +39,33 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
         if(button==="login"){
             setLogin(true);
         }else{
-
+            localStorage.clear();
+      getLogoutFun();
+      setTimeout(() => {
+        navigate('/')
+        window.location.reload();
+window.location.reload();
+    }, 1000);
         }
     }
+
+   const getLogoutFun = async()=>{
+    axios.post("http://localhost:4000/auth/logout",{},{ withCredentials: true}).then((res)=>{
+      console.log("Logout ")
+    }).catch(err=>{
+      console.log(err)
+    })
+  }
+
+    useEffect(()=>{
+    let userProfilePic = localStorage.getItem("userProfilePic");
+    setIsLogedIn(localStorage.getItem("userId")!==null?true:false);
+    if(userProfilePic!==null){
+      setUserPic(userProfilePic)
+    }
+
+  },[])
+
   return (
   <div className="navbar">
 
@@ -55,7 +83,7 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
 
     <div className="navbar-middle">
         <div className="navbar_searchBox">
-            <input type="text" placeholder="Search" className="navbar_searchBoxInput"/>
+            <input type="text" placeholder="Search" className="navbar_searchBoxInput"/> 
             <div className="navbar_searchIconBox">
                 <SearchIcon sx={{fontSize:"28px",color:"white"}}/>
             </div>
@@ -73,9 +101,10 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
         <img onClick={handleClickModel} src={userPic} alt="logo" className="navbar-right-logo" />
 { navbarModel &&
         <div className="navbar-model">
-            <div className="navbar-model-option" onClick={handleprofile}>Profile</div>
-            <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("logout")}>Logout</div>
-            <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("login")}>Login</div>
+            {isLogedIn && <div className="navbar-model-option" onClick={handleprofile}>Profile</div>}
+            
+            {isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("logout")}>Logout</div>}
+            {!isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("login")}>Login</div>}
         </div>
 }
     </div>

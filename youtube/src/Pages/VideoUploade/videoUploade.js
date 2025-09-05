@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "./videoUploade.css";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const VideoUploade = () => {
@@ -15,6 +15,7 @@ const VideoUploade = () => {
     videoType: "",
   });
   const [loader,setLoader] = useState(false);
+  const navigate = useNavigate()
 
   const handleInputField = (event, name) => {
     setInputField({
@@ -52,6 +53,12 @@ const VideoUploade = () => {
     }
   };
   console.log(inputField);
+  useEffect(()=>{
+    let isLogin =localStorage.getItem("userId")
+    if(isLogin===null){
+      navigate('/')
+    }
+  },[])
 
   return (
     <div className="videoUploade">

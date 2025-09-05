@@ -11,7 +11,7 @@ const Profile = ({ sideNavbar }) => {
   const [user, setUser] = useState(null);
   const fetchProfileData = async () => {
     axios
-      .get(`http://localhost:4000/api/68b8a48c66ce29bf6ca72e0a/channel`)
+      .get(`http://localhost:4000/api/${id}/channel`)
       .then((response) => {
         console.log(response);
         setData(response.data.video);
