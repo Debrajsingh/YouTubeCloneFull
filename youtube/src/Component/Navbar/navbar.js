@@ -32,7 +32,7 @@ const Navbar = ({setSideNavbarFunc, sideNavbar}) => {
         navigate(`/user/${userId}`);
         setNavbarModel(false);
     } else {
-        setLogin(true); // Show login modal if not logged in
+        setLogin(true); 
     }
 };
     const setLoginModel=()=>{
@@ -103,7 +103,7 @@ window.location.reload();
     <img onClick={handleClickModel} src={userPic} alt="logo" className="navbar-right-logo" />
     { navbarModel &&
         <div className="navbar-model">
-            {isLogedIn && <div className="navbar-model-option" onClick={handleprofile}>Profile</div>}
+            
             {isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("logout")}>Logout</div>}
             {!isLogedIn && <div className="navbar-model-option" onClick={()=>onClickOfPopUpOption("login")}>Login</div>}
         </div>
